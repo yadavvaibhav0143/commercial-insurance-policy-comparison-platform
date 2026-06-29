@@ -1,1 +1,1 @@
-# commercial-insurance-policy-comparison-platform
+# Commercial-insurance-policy-comparison-platform
