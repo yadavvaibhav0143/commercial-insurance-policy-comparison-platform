@@ -1,12 +1,12 @@
 -- ==============================================================================
 -- PORTFOLIO ASSET: COMMERCIAL INSURANCE PLACEMENT ENGINE
 -- DESIGN LAYER: RELATIONAL DATA ARCHITECTURE (DDL SCHEMA)
--- SYSTEMS DESIGNATION: SENIOR TECHNICAL BA / FUNCTIONAL CONSULTANT TIER
+-- SENIOR TECHNICAL BA / FUNCTIONAL CONSULTANT TIER
 -- ==============================================================================
 
 -- Order-dependent destruction sequences to avoid structural constraint violations
-DROP TABLE IF EXISTS AdvisoryAuditLogs;
-DROP TABLE IF EXISTS ComparisonRecommendations;
+DROP TABLE IF EXISTS AuditLogs;
+DROP TABLE IF EXISTS Recommendations;
 DROP TABLE IF EXISTS PolicyExclusions;
 DROP TABLE IF EXISTS PolicyCoverages;
 DROP TABLE IF EXISTS InsurancePolicies;
@@ -34,7 +34,7 @@ CREATE TABLE InsurancePolicies (
     underwriter_carrier VARCHAR(50) NOT NULL,
     policy_type VARCHAR(50) NOT NULL 
         CHECK (policy_type IN ('Cyber Liability', 'Directors & Officers', 'Errors & Omissions')),
-    annual_premium_amount DECIMAL(15,2) NOT NULL CHECK (annual_premium_amount > 0),
+    premium_amount DECIMAL(15,2) NOT NULL CHECK (premium_amount > 0),
     document_upload_timestamp TIMESTAMP NOT NULL,
     ai_extraction_status VARCHAR(20) NOT NULL 
         CHECK (ai_extraction_status IN ('Completed', 'Failed', 'Pending')),
@@ -110,7 +110,7 @@ CREATE TABLE AdvisoryAuditLogs (
     operator_username VARCHAR(50) NOT NULL,
     governance_action VARCHAR(30) NOT NULL 
         CHECK (governance_action IN ('AI_Extraction_Run', 'Manual_Override_Save', 'Advisory_Final_Approve')),
-    action_execution_timestamp TIMESTAMP NOT NULL,
+    action_timestamp TIMESTAMP NOT NULL,
     target_clause_reference VARCHAR(30) NULL,
     compliance_override_justification TEXT NULL, -- Forced text input box for E&O defense
     
