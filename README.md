@@ -1,14 +1,14 @@
 # Commercial-insurance-policy-comparison-platform
 
-Project Overview
+## Project Overview
 
 A Business Analysis case study demonstrating the design of a Commercial Insurance Policy Comparison platform that enables brokers to compare policies, identify coverage gaps, improve advisory decisions, and maintain governance through audit trails.
 
-Business Problem
+## Business Problem
 
 Commercial insurance policy comparison is often manual, time-consuming, and inconsistent across insurers, resulting in operational inefficiencies and increased advisory risk.
 
-Proposed Solution
+## Proposed Solution
 
 Designed a centralized platform to:
 
@@ -18,7 +18,7 @@ Generate structured broker recommendations
 Maintain audit and compliance records
 Support operational reporting through SQL and Tableau
 
-Deliverables
+## Deliverables
 Business Analysis Document (BRD)
 Executive Presentation
 Entity Relationship Diagram (ERD)
@@ -27,14 +27,14 @@ Sample Dataset
 SQL Analytics Queries
 Tableau Dashboard
 
-Tools & Technologies
+## Tools & Technologies
 PostgreSQL
 Tableau Public
 Microsoft Word
 PowerPoint
 GitHub
 
-Skills Demonstrated
+## Skills Demonstrated
 Business Analysis
 Requirements Engineering
 Process Modelling
