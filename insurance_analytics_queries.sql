@@ -40,7 +40,7 @@ SELECT
     e.contract_clause_reference,
     e.exclusion_title_raw,
     e.unmitigated_risk_severity,
-    COALESCE(a.compliance_override_justification, '🚨 NO LEGAL ADVISORY MITIGATION RECORDED') AS audit_line_defensibility,
+    COALESCE(a.compliance_override_justification, 'No advisory mitigation recorded') AS audit_line_defensibility,
     -- Advanced Window Partition to stack and rank carrier liabilities
     DENSE_RANK() OVER (
         PARTITION BY p.policy_type 
