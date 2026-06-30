@@ -1,12 +1,12 @@
 -- ==============================================================================
 -- PORTFOLIO ASSET: COMMERCIAL INSURANCE PLACEMENT ENGINE
--- EXECUTABLE LOGIC LAYER: ADVANCED AUDIT BI QUERIES
--- SYSTEMS DESIGNATION: REVENUE DATA EXTRACTION & SYSTEMIC RISK ISOLATION
+-- EXECUTABLE LOGIC LAYER: ADVANCED AUDIT BI QUERIES (FULL REPOSITORY SYNC)
+-- SYSTEMS DESIGNATION: COMPLETE BACKEND BACKING FOR TABLEAU VISUALS
 -- ==============================================================================
 
 -- ==============================================================================
--- QUERY 1: CORE BROKERAGE PLACEMENT PROCESSING SLA VELOCITY LOGS
--- Business Context: Maps Slide 19 operational speed metrics.
+-- QUERY 1: CORE SLA TURNAROUND SCORECARD (Backs the SLA Scorecard Metric Card)
+-- Business Context: Calculates overall processing speed and compliance thresholds.
 -- ==============================================================================
 WITH PlacementSLAIntervals AS (
     SELECT 
@@ -22,7 +22,6 @@ WITH PlacementSLAIntervals AS (
 SELECT 
     COUNT(policy_id) AS total_advisory_portfolios_finalized,
     ROUND(AVG(processing_turnaround_hours), 2) AS average_placement_turnaround_hours,
-    -- Fixed: Full division-by-zero protective formula loop intact
     COALESCE(
         ROUND((COUNT(CASE WHEN processing_turnaround_hours <= 24.0 THEN 1 END) * 100.0) / NULLIF(COUNT(policy_id), 0), 2),
         100.00
@@ -31,21 +30,44 @@ FROM PlacementSLAIntervals;
 
 
 -- ==============================================================================
--- QUERY 2: UNMITIGATED LIABILITY & COVERAGE GAP RANKING REPORT
--- Business Context: Maps Slide 21 E&O Risk Isolation and Carrier Exclusions.
+-- QUERY 2: UNMITIGATED LIABILITY EXCLUSION REPORT (Backs the Exclusion Density Chart)
+-- Business Context: Uses Window Partitioning to rank and count hidden carrier risks.
 -- ==============================================================================
 SELECT 
     p.underwriter_carrier,
     p.policy_type,
-    e.contract_clause_reference,
-    e.exclusion_title_raw,
     e.unmitigated_risk_severity,
-    COALESCE(a.compliance_override_justification, 'No advisory mitigation recorded') AS audit_line_defensibility,
-    -- Advanced Window Partition to stack and rank carrier liabilities
+    COUNT(e.exclusion_id) AS total_exclusion_count,
     DENSE_RANK() OVER (
         PARTITION BY p.policy_type 
-        ORDER BY CASE e.unmitigated_risk_severity WHEN 'Critical' THEN 1 WHEN 'Standard' THEN 2 ELSE 3 END ASC
-    ) AS carrier_risk_priority_rank
+        ORDER BY COUNT(e.exclusion_id) DESC
+    ) AS carrier_risk_density_rank
 FROM InsurancePolicies p
 JOIN PolicyExclusions e ON p.policy_id = e.policy_id
-LEFT JOIN AdvisoryAuditLogs a ON p.policy_id = a.policy_id AND e.contract_clause_reference = a.target_clause_reference;
+GROUP BY p.underwriter_carrier, p.policy_type, e.unmitigated_risk_severity;
+
+
+-- ==============================================================================
+-- QUERY 3: COMPLIANCE INTEGRITY AUDIT LEDGER (Backs the Audit Ledger Table View)
+-- Business Context: Exposes manual overrides and mandatory written justifications.
+-- ==============================================================================
+SELECT 
+    a.operator_username,
+    a.governance_action,
+    a.action_execution_timestamp,
+    a.target_clause_reference,
+    COALESCE(a.compliance_override_justification, '🚨 NO OVERRIDE REQUIRED / AUTOMATED RUN') AS audit_line_defensibility
+FROM AdvisoryAuditLogs a
+ORDER BY a.action_execution_timestamp ASC;
+
+
+-- ==============================================================================
+-- QUERY 4: BROKER PRODUCTIVITY & VELOCITY MONITOR (Future-Proof Scale Metric)
+-- Business Context: Counts active transactions processed grouped by analyst teams.
+-- ==============================================================================
+SELECT 
+    a.operator_username,
+    COUNT(DISTINCT a.policy_id) AS total_unique_policies_handled,
+    COUNT(a.log_id) AS total_governance_actions_logged
+FROM AdvisoryAuditLogs a
+GROUP BY a.operator_username;
