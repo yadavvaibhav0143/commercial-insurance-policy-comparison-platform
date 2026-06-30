@@ -83,7 +83,7 @@ CREATE TABLE PolicyExclusions (
 -- ==============================================================================
 -- 5. DECISION LAYER: BROKER COMPARISON & PLACEMENT PLACEMENTS
 -- ==============================================================================
-CREATE TABLE ComparisonRecommendations (
+CREATE TABLE Recommendations (
     recommendation_id INT PRIMARY KEY,
     client_id INT NOT NULL,
     selected_policy_id INT NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE ComparisonRecommendations (
 -- ==============================================================================
 -- 6. GOVERNANCE LAYER: IMMUTABLE COMPLIANCE OVERRIDE AUDIT LOGS
 -- ==============================================================================
-CREATE TABLE AdvisoryAuditLogs (
+CREATE TABLE AuditLogs (
     log_id INT PRIMARY KEY,
     policy_id INT NOT NULL,
     operator_username VARCHAR(50) NOT NULL,
