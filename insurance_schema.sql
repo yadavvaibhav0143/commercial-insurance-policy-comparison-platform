@@ -1,7 +1,5 @@
 -- ==============================================================================
 -- PORTFOLIO ASSET: COMMERCIAL INSURANCE PLACEMENT ENGINE
--- DESIGN LAYER: RELATIONAL DATA ARCHITECTURE (DDL SCHEMA)
--- SENIOR TECHNICAL BA / FUNCTIONAL CONSULTANT TIER
 -- ==============================================================================
 
 -- Order-dependent destruction sequences to avoid structural constraint violations
