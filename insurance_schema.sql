@@ -1,10 +1,11 @@
 -- ==============================================================================
--- PORTFOLIO ASSET: COMMERCIAL INSURANCE PLACEMENT ENGINE
+-- PORTFOLIO ASSET: COMMERCIAL INSURANCE POLICY COMPARISON & RISK INSIGHTS PLATFORM
 -- ==============================================================================
 
 -- Order-dependent destruction sequences to avoid structural constraint violations
 DROP TABLE IF EXISTS AdvisoryAuditLogs;
-DROP TABLE IF EXISTS ComparisonRecommendations;
+DROP TABLE IF EXISTS Recommendations;
+DROP TABLE IF EXISTS PolicyComparisons;
 DROP TABLE IF EXISTS PolicyExclusions;
 DROP TABLE IF EXISTS PolicyCoverages;
 DROP TABLE IF EXISTS InsurancePolicies;
@@ -22,7 +23,7 @@ CREATE TABLE CorporateClients (
 );
 
 -- ==============================================================================
--- 2. TRANSACTIONAL LEDGER: UNDERWRITER CARRIER QUOTATIONS
+-- 2. TRANSACTIONAL LEDGER: COMMERCIAL INSURANCE POLICIES
 -- ==============================================================================
 CREATE TABLE InsurancePolicies (
     policy_id INT PRIMARY KEY,
@@ -36,7 +37,7 @@ CREATE TABLE InsurancePolicies (
 );
 
 -- ==============================================================================
--- 3. SUB-TRANSACTIONAL LEDGER: EXTRACTED CLAUSE COVERAGE BOUNDARIES
+-- 3. POLICY EXCLUSION DATA: IDENTIFIED POLICY EXCLUSIONS & RISK SEVERITY
 -- ==============================================================================
 CREATE TABLE PolicyCoverages (
     coverage_id INT PRIMARY KEY,
@@ -64,27 +65,41 @@ CREATE TABLE PolicyExclusions (
 -- ==============================================================================
 -- 5. DECISION LAYER: BROKER COMPARISON & PLACEMENT PLACEMENTS
 -- ==============================================================================
-CREATE TABLE ComparisonRecommendations (
-    recommendation_id INT PRIMARY KEY,
-    client_id INT NOT NULL,
-    selected_policy_id INT NOT NULL,
-    total_quotes_evaluated INT NOT NULL CHECK (total_quotes_evaluated > 0),
-    advisory_status VARCHAR(20) NOT NULL CHECK (advisory_status IN ('Draft', 'Presented_To_Client', 'Bound_Confirmed')),
-    final_broker_signoff_user VARCHAR(50) NOT NULL,
-    CONSTRAINT fk_recommendation_client FOREIGN KEY (client_id) REFERENCES CorporateClients(client_id) ON DELETE CASCADE,
-    CONSTRAINT fk_recommendation_policy FOREIGN KEY (selected_policy_id) REFERENCES InsurancePolicies(policy_id)
+CREATE TABLE Recommendations (
+    recommendation_id INT NOT NULL,
+    comparison_id INT NOT NULL,
+    recommendation_version INT NOT NULL,
+    recommendation_type VARCHAR(30) NOT NULL CHECK (recommendation_type IN ('Best Match', 'Gap Identified')),
+    recommendation_status VARCHAR(20) NOT NULL CHECK (recommendation_status IN ('Draft', 'Approved')),
+    recommendation_started_at TIMESTAMP, recommendation_completed_at TIMESTAMP,
+    PRIMARY KEY (recommendation_id, recommendation_version),
+    CONSTRAINT fk_recommendation_comparison   FOREIGN KEY (comparison_id)  REFERENCES PolicyComparisons(comparison_id)
 );
 
 -- ==============================================================================
 -- 6. GOVERNANCE LAYER: IMMUTABLE COMPLIANCE OVERRIDE AUDIT LOGS
 -- ==============================================================================
 CREATE TABLE AdvisoryAuditLogs (
-    log_id INT PRIMARY KEY,
-    policy_id INT NOT NULL,
-    operator_username VARCHAR(50) NOT NULL,
-    governance_action VARCHAR(30) NOT NULL CHECK (governance_action IN ('AI_Extraction_Run', 'Manual_Override_Save', 'Advisory_Final_Approve')),
-    action_execution_timestamp TIMESTAMP NOT NULL,
-    target_clause_reference VARCHAR(30) NULL,
-    compliance_override_justification TEXT NULL,
-    CONSTRAINT fk_audit_parent_policy FOREIGN KEY (policy_id) REFERENCES InsurancePolicies(policy_id) ON DELETE CASCADE
+    audit_id INT PRIMARY KEY,
+    entity_type VARCHAR(30) NOT NULL,
+    entity_id INT NOT NULL,
+    action VARCHAR(30) NOT NULL,
+    performed_by VARCHAR(50) NOT NULL,
+    action_timestamp TIMESTAMP NOT NULL
 );
+
+-- ==============================================================================
+-- 7. POLICY COMPARISON LAYER: POLICY COMPARISON RECORDS
+-- ==============================================================================
+CREATE TABLE PolicyComparisons (
+    comparison_id INT PRIMARY KEY,
+    base_policy_id INT NOT NULL,
+    comparison_policy_id INT NOT NULL,
+    comparison_date DATE NOT NULL,
+    comparison_status VARCHAR(20) NOT NULL CHECK (comparison_status IN ('Completed', 'Pending')),
+     broker_user_id INT NOT NULL,
+    comparison_started_at TIMESTAMP,
+    comparison_completed_at TIMESTAMP,
+    CONSTRAINT fk_comparison_base_policy FOREIGN KEY (base_policy_id)   REFERENCES InsurancePolicies(policy_id),
+   CONSTRAINT fk_comparison_policy FOREIGN KEY (comparison_policy_id)  REFERENCES InsurancePolicies(policy_id)
+);    
