@@ -1,37 +1,35 @@
 -- ==============================================================================
--- PORTFOLIO ASSET: COMMERCIAL INSURANCE PLACEMENT ENGINE
--- EXECUTABLE LOGIC LAYER: ADVANCED AUDIT BI QUERIES (FULL REPOSITORY SYNC)
--- SYSTEMS DESIGNATION: COMPLETE BACKEND BACKING FOR TABLEAU VISUALS
+-- PORTFOLIO ASSET: COMMERCIAL INSURANCE POLICY COMPARISON & RISK INSIGHTS PLATFORM
+-- EXECUTABLE LOGIC LAYER: SQL ANALYTICS QUERIES
+-- SYSTEMS DESIGNATION: BACKEND ANALYTICS SUPPORT FOR TABLEAU VISUALS
 -- ==============================================================================
 
 -- ==============================================================================
--- QUERY 1: CORE SLA TURNAROUND SCORECARD (Backs the SLA Scorecard Metric Card)
--- Business Context: Calculates overall processing speed and compliance thresholds.
+-- QUERY 1: POLICY COMPARISON TURNAROUND SCORECARD
+-- Business Context: Calculates policy comparison processing time and SLA compliance.
 -- ==============================================================================
-WITH PlacementSLAIntervals AS (
-    SELECT 
-        p.policy_id,
-        p.underwriter_carrier,
-        p.document_upload_timestamp,
-        a.action_execution_timestamp AS final_approval_timestamp,
-        EXTRACT(EPOCH FROM (a.action_execution_timestamp - p.document_upload_timestamp)) / 3600.0 AS processing_turnaround_hours
-    FROM InsurancePolicies p
-    JOIN AdvisoryAuditLogs a ON p.policy_id = a.policy_id
-    WHERE a.governance_action = 'Advisory_Final_Approve'
+WITH ComparisonSLAIntervals AS (
+    SELECT
+        comparison_id,
+        comparison_started_at,
+        comparison_completed_at,
+        EXTRACT(
+            EPOCH FROM (comparison_completed_at - comparison_started_at)
+        ) / 3600.0 AS comparison_turnaround_hours
+    FROM PolicyComparisons
+    WHERE comparison_status = 'Completed'
+      AND comparison_started_at IS NOT NULL
+      AND comparison_completed_at IS NOT NULL
 )
-SELECT 
-    COUNT(policy_id) AS total_advisory_portfolios_finalized,
-    ROUND(AVG(processing_turnaround_hours), 2) AS average_placement_turnaround_hours,
-    COALESCE(
-        ROUND((COUNT(CASE WHEN processing_turnaround_hours <= 24.0 THEN 1 END) * 100.0) / NULLIF(COUNT(policy_id), 0), 2),
-        100.00
-    ) AS branch_sla_compliance_percentage
-FROM PlacementSLAIntervals;
-
+SELECT
+    COUNT(comparison_id) AS total_comparisons_completed,
+    ROUND(AVG(comparison_turnaround_hours), 2) AS average_comparison_turnaround_hours,
+COALESCE( ROUND( (COUNT(CASE  WHEN comparison_turnaround_hours <= 24.0 THEN 1 END ) * 100.0 ) / NULLIF(COUNT(comparison_id), 0), 2), 100.00 ) AS comparison_sla_compliance_percentage
+    FROM ComparisonSLAIntervals;
 
 -- ==============================================================================
--- QUERY 2: UNMITIGATED LIABILITY EXCLUSION REPORT (Backs the Exclusion Density Chart)
--- Business Context: Uses Window Partitioning to rank and count hidden carrier risks.
+-- QUERY 2: COVERAGE EXCLUSION DENSITY ANALYSIS
+-- Business Context: Analyzes exclusion frequency and severity across insurers and policy types.
 -- ==============================================================================
 SELECT 
     p.underwriter_carrier,
@@ -48,26 +46,45 @@ GROUP BY p.underwriter_carrier, p.policy_type, e.unmitigated_risk_severity;
 
 
 -- ==============================================================================
--- QUERY 3: COMPLIANCE INTEGRITY AUDIT LEDGER (Backs the Audit Ledger Table View)
--- Business Context: Exposes manual overrides and mandatory written justifications.
+-- QUERY 3: ADVISORY AUDIT ACTIVITY LEDGER
+-- Business Context: Provides an auditable record of key policy processing and advisory actions.
 -- ==============================================================================
-SELECT 
-    a.operator_username,
-    a.governance_action,
-    a.action_execution_timestamp,
-    a.target_clause_reference,
-    COALESCE(a.compliance_override_justification, '🚨 NO OVERRIDE REQUIRED / AUTOMATED RUN') AS audit_line_defensibility
+SELECT
+    a.audit_id,
+    a.entity_type,
+    a.entity_id,
+    a.action,
+    a.performed_by,
+    a.action_timestamp
 FROM AdvisoryAuditLogs a
-ORDER BY a.action_execution_timestamp ASC;
+ORDER BY a.action_timestamp ASC;
 
 
 -- ==============================================================================
--- QUERY 4: BROKER PRODUCTIVITY & VELOCITY MONITOR (Future-Proof Scale Metric)
--- Business Context: Counts active transactions processed grouped by analyst teams.
+-- QUERY 4: BROKER PRODUCTIVITY & COMPARISON ACTIVITY
+-- Business Context: Measures policy comparison activity by broker.
 -- ==============================================================================
-SELECT 
-    a.operator_username,
-    COUNT(DISTINCT a.policy_id) AS total_unique_policies_handled,
-    COUNT(a.log_id) AS total_governance_actions_logged
-FROM AdvisoryAuditLogs a
-GROUP BY a.operator_username;
+SELECT
+broker_user_id,
+    COUNT(comparison_id) AS total_comparisons,  COUNT( CASE WHEN comparison_status = 'Completed' THEN 1  END ) AS completed_comparisons,
+     COUNT(CASE WHEN comparison_status = 'Pending' THEN 1  END ) AS pending_comparisons
+FROM PolicyComparisons
+GROUP BY broker_user_id
+ORDER BY total_comparisons DESC;
+
+-- ==============================================================================
+-- QUERY 5: RECOMMENDATION TURNAROUND ANALYSIS
+-- Business Context: Measures the time required to complete broker recommendations.
+-- ==============================================================================
+SELECT
+    recommendation_id,
+    recommendation_version,
+    comparison_id,
+    recommendation_status,
+    recommendation_started_at,
+    recommendation_completed_at,
+ ROUND( EXTRACT( EPOCH FROM (recommendation_completed_at - recommendation_started_at)) / 3600.0, 2) AS recommendation_turnaround_hours
+FROM Recommendations
+WHERE recommendation_started_at IS NOT NULL
+  AND recommendation_completed_at IS NOT NULL
+ORDER BY recommendation_completed_at;
