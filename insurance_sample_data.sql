@@ -39,9 +39,9 @@ INSERT INTO Recommendations (recommendation_id, comparison_id, recommendation_ve
 (2001, 1001, 1, 'Best Match', 'Approved', '2026-06-25 13:00:00', '2026-06-25 14:00:00');
 
 -- 7. Populating Compliance Audit Trail History & Overrides 
-INSERT INTO AdvisoryAuditLogs (audit_id, entity_type, entity_id, action, performed_by, action_timestamp) VALUES
-(3001, 'Policy', 501, 'Upload', 'broker_vaibhav_yadav', '2026-06-25 09:20:00'),
-(3002, 'Comparison', 1001, 'Compare', 'broker_vaibhav_yadav', '2026-06-25 12:00:00'),
-(3003, 'Report', 1001, 'Report Generated', 'broker_vaibhav_yadav', '2026-06-25 12:50:00'),
-(3004, 'Recommendation', 2001, 'Manual Override', 'broker_vaibhav_yadav', '2026-06-25 13:30:00'),
-(3005, 'Recommendation', 2001, 'Approved', 'broker_vaibhav_yadav', '2026-06-25 14:00:00');
+INSERT INTO AdvisoryAuditLogs (audit_id, entity_type, entity_id, action, performed_by, action_timestamp, justification) VALUES
+(3001, 'Policy', 501, 'Upload', 'broker_vaibhav_yadav', '2026-06-25 09:20:00', NULL),
+(3002, 'Comparison', 1001, 'Compare', 'broker_vaibhav_yadav', '2026-06-25 12:00:00', NULL),
+(3003, 'Report', 1001, 'Report Generated', 'broker_vaibhav_yadav', '2026-06-25 12:50:00', NULL),
+(3004, 'Recommendation', 2001, 'Manual Override', 'broker_vaibhav_yadav', '2026-06-25 13:30:00', 'Broker validated client-specific risk exposure and adjusted the recommendation.'),
+(3005, 'Recommendation', 2001, 'Approved', 'broker_vaibhav_yadav', '2026-06-25 14:00:00', NULL);
