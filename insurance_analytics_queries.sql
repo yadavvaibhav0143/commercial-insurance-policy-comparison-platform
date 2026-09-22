@@ -24,7 +24,6 @@ WITH ComparisonSLAIntervals AS (
 SELECT
     COUNT(comparison_id) AS total_comparisons_completed,
     ROUND(AVG(comparison_turnaround_hours), 2) AS average_comparison_turnaround_hours,
-COALESCE( ROUND( (COUNT(CASE  WHEN comparison_turnaround_hours <= 24.0 THEN 1 END ) * 100.0 ) / NULLIF(COUNT(comparison_id), 0), 2), 100.00 ) AS comparison_sla_compliance_percentage
     FROM ComparisonSLAIntervals;
 
 -- ==============================================================================
@@ -41,8 +40,9 @@ SELECT
         ORDER BY COUNT(e.exclusion_id) DESC
     ) AS carrier_risk_density_rank
 FROM InsurancePolicies p
-JOIN PolicyExclusions e ON p.policy_id = e.policy_id
-GROUP BY p.underwriter_carrier, p.policy_type, e.unmitigated_risk_severity;
+LEFT JOIN PolicyExclusions e ON p.policy_id = e.policy_id
+GROUP BY p.underwriter_carrier, p.policy_type
+ORDER BY p.policy_type, carrier_risk_density_rank;
 
 
 -- ==============================================================================
