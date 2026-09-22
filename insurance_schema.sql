@@ -3,14 +3,13 @@
 -- ==============================================================================
 
 -- Order-dependent destruction sequences to avoid structural constraint violations
-DROP TABLE IF EXISTS AdvisoryAuditLogs;
-DROP TABLE IF EXISTS Recommendations;
-DROP TABLE IF EXISTS PolicyComparisons;
-DROP TABLE IF EXISTS PolicyExclusions;
-DROP TABLE IF EXISTS PolicyCoverages;
-DROP TABLE IF EXISTS InsurancePolicies;
 DROP TABLE IF EXISTS CorporateClients;
-
+DROP TABLE IF EXISTS InsurancePolicies;
+DROP TABLE IF EXISTS PolicyCoverages;
+DROP TABLE IF EXISTS PolicyExclusions;
+DROP TABLE IF EXISTS PolicyComparisons;
+DROP TABLE IF EXISTS Recommendations;
+DROP TABLE IF EXISTS AdvisoryAuditLogs;
 -- ==============================================================================
 -- 1. MASTER LEDGER: CORPORATE CLIENT RISK PROFILES
 -- ==============================================================================
@@ -63,33 +62,7 @@ CREATE TABLE PolicyExclusions (
 );
 
 -- ==============================================================================
--- 5. DECISION LAYER: BROKER COMPARISON & PLACEMENT PLACEMENTS
--- ==============================================================================
-CREATE TABLE Recommendations (
-    recommendation_id INT NOT NULL,
-    comparison_id INT NOT NULL,
-    recommendation_version INT NOT NULL,
-    recommendation_type VARCHAR(30) NOT NULL CHECK (recommendation_type IN ('Best Match', 'Gap Identified')),
-    recommendation_status VARCHAR(20) NOT NULL CHECK (recommendation_status IN ('Draft', 'Approved')),
-    recommendation_started_at TIMESTAMP, recommendation_completed_at TIMESTAMP,
-    PRIMARY KEY (recommendation_id, recommendation_version),
-    CONSTRAINT fk_recommendation_comparison   FOREIGN KEY (comparison_id)  REFERENCES PolicyComparisons(comparison_id)
-);
-
--- ==============================================================================
--- 6. GOVERNANCE LAYER: IMMUTABLE COMPLIANCE OVERRIDE AUDIT LOGS
--- ==============================================================================
-CREATE TABLE AdvisoryAuditLogs (
-    audit_id INT PRIMARY KEY,
-    entity_type VARCHAR(30) NOT NULL,
-    entity_id INT NOT NULL,
-    action VARCHAR(30) NOT NULL,
-    performed_by VARCHAR(50) NOT NULL,
-    action_timestamp TIMESTAMP NOT NULL
-);
-
--- ==============================================================================
--- 7. POLICY COMPARISON LAYER: POLICY COMPARISON RECORDS
+-- 5. POLICY COMPARISON LAYER: POLICY COMPARISON RECORDS
 -- ==============================================================================
 CREATE TABLE PolicyComparisons (
     comparison_id INT PRIMARY KEY,
@@ -103,3 +76,31 @@ CREATE TABLE PolicyComparisons (
     CONSTRAINT fk_comparison_base_policy FOREIGN KEY (base_policy_id)   REFERENCES InsurancePolicies(policy_id),
    CONSTRAINT fk_comparison_policy FOREIGN KEY (comparison_policy_id)  REFERENCES InsurancePolicies(policy_id)
 );    
+
+-- ==============================================================================
+-- 6. DECISION LAYER: BROKER COMPARISON & PLACEMENT PLACEMENTS
+-- ==============================================================================
+CREATE TABLE Recommendations (
+    recommendation_id INT NOT NULL,
+    comparison_id INT NOT NULL,
+    recommendation_version INT NOT NULL,
+    recommendation_type VARCHAR(30) NOT NULL CHECK (recommendation_type IN ('Best Match', 'Gap Identified')),
+    recommendation_status VARCHAR(20) NOT NULL CHECK (recommendation_status IN ('Draft', 'Approved')),
+    recommendation_started_at TIMESTAMP, recommendation_completed_at TIMESTAMP,
+    PRIMARY KEY (recommendation_id, recommendation_version),
+    CONSTRAINT fk_recommendation_comparison   FOREIGN KEY (comparison_id)  REFERENCES PolicyComparisons(comparison_id)
+);
+
+-- ==============================================================================
+-- 7. GOVERNANCE LAYER: IMMUTABLE COMPLIANCE OVERRIDE AUDIT LOGS
+-- ==============================================================================
+CREATE TABLE AdvisoryAuditLogs (
+    audit_id INT PRIMARY KEY,
+    entity_type VARCHAR(30) NOT NULL,
+    entity_id INT NOT NULL,
+    action VARCHAR(30) NOT NULL,
+    performed_by VARCHAR(50) NOT NULL,
+    action_timestamp TIMESTAMP NOT NULL
+);
+
+
