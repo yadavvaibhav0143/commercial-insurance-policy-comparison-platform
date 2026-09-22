@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- PORTFOLIO ASSET: COMMERCIAL INSURANCE POLICY COMPARISON & RISK INSIGHTS PLATFORM
--- INGESTION LAYER: PRODUCTION-GRADE SEED INITIALIZATION DATA (DML)
+-- INGESTION LAYER: SAMPLE DATA SEED INITIALIZATION (DML)
 -- ==============================================================================
 
 -- 1. Populating Enterprise Corporate Client Accounts
