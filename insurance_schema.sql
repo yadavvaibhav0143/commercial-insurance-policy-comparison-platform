@@ -78,7 +78,7 @@ CREATE TABLE PolicyComparisons (
 );    
 
 -- ==============================================================================
--- 6. DECISION LAYER: BROKER COMPARISON & PLACEMENT PLACEMENTS
+-- 6. DECISION LAYER: BROKER COMPARISON & RECOMMENDATIONS
 -- ==============================================================================
 CREATE TABLE Recommendations (
     recommendation_id INT NOT NULL,
