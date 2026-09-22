@@ -23,26 +23,27 @@ WITH ComparisonSLAIntervals AS (
 )
 SELECT
     COUNT(comparison_id) AS total_comparisons_completed,
-    ROUND(AVG(comparison_turnaround_hours), 2) AS average_comparison_turnaround_hours,
+    ROUND(AVG(comparison_turnaround_hours), 2) AS average_comparison_turnaround_hours
     FROM ComparisonSLAIntervals;
 
 -- ==============================================================================
--- QUERY 2: COVERAGE EXCLUSION DENSITY ANALYSIS
--- Business Context: Analyzes exclusion frequency and severity across insurers and policy types.
+-- QUERY 2: EXCLUSION DENSITY BY POLICY TYPE & CARRIER
+-- Business Context: Measures the number of policy exclusions
+-- across insurers and policy types.
 -- ==============================================================================
-SELECT 
+SELECT
     p.underwriter_carrier,
     p.policy_type,
-    e.unmitigated_risk_severity,
-    COUNT(e.exclusion_id) AS total_exclusion_count,
-    DENSE_RANK() OVER (
-        PARTITION BY p.policy_type 
-        ORDER BY COUNT(e.exclusion_id) DESC
-    ) AS carrier_risk_density_rank
+    COUNT(e.exclusion_id) AS total_exclusion_count
 FROM InsurancePolicies p
-LEFT JOIN PolicyExclusions e ON p.policy_id = e.policy_id
-GROUP BY p.underwriter_carrier, p.policy_type
-ORDER BY p.policy_type, carrier_risk_density_rank;
+LEFT JOIN PolicyExclusions e
+    ON p.policy_id = e.policy_id
+GROUP BY
+    p.underwriter_carrier,
+    p.policy_type
+ORDER BY
+    p.policy_type,
+    total_exclusion_count DESC;
 
 
 -- ==============================================================================
