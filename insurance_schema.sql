@@ -101,6 +101,7 @@ CREATE TABLE AdvisoryAuditLogs (
     action VARCHAR(30) NOT NULL,
     performed_by VARCHAR(50) NOT NULL,
     action_timestamp TIMESTAMP NOT NULL
+    justification VARCHAR(255)
 );
 
 
