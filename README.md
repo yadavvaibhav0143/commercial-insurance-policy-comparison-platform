@@ -107,18 +107,20 @@ The proposed solution is designed to:
 
 The repository contains the project documentation, solution design, data, SQL, API specifications, and analytics assets.
 
-- [Business Analysis & Solution Design](./<MASTER_DOCUMENT_FILENAME>)
-- [Business Analysis Presentation](./<PPT_FILENAME>)
-- [Insurance Dataset](./<EXCEL_DATASET_FILENAME>)
-- [SQL Schema & Analytics](./<SQL_FILENAME>)
-- [API Contracts](./<API_FILENAME>)
-- [Tableau Dashboard](./<TABLEAU_DASHBOARD_FILENAME>)
+- [Business Analysis & Solution Design](./Commercial%20Insurance%20Policy_Word.pdf)
+- [Business Analysis Presentation](./commercial_insurance_ppt.pdf)
+- [Insurance Dataset](./commercial_insurance.data.xlsx)
+- [Insurance Database Schema](./insurance_schema.sql)
+- [Insurance Sample Data](./insurance_sample_data.sql)
+- [SQL Analytics Queries](./insurance_analytics_queries.sql)
+- [SQL Query 1 — Policy Comparison Turnaround](./In.Query_1.png)
+- [SQL Query 2 — Coverage & Exclusion Density](./In.Query_2.png)
 
 ---
 
 ## Preview
 
-![Commercial Insurance Policy Comparison & Risk Insights Dashboard](./<TABLEAU_DASHBOARD_FILENAME>)
+![Commercial Insurance Policy Comparison & Risk Insights Dashboard](./In.dash.png)
 
 ---
 
