@@ -107,9 +107,9 @@ The proposed solution is designed to:
 
 The repository contains the project documentation, solution design, data, SQL, API specifications, and analytics assets.
 
-- [Business Analysis & Solution Design](https://github.com/yadavvaibhav0143/commercial-insurance-policy-comparison-platform/blob/main/Commercial%20Insurance%20Policy_Word..pdf)
-- [Business Analysis Presentation](https://github.com/yadavvaibhav0143/commercial-insurance-policy-comparison-platform/blob/main/commercial_insurance_ppt..pdf)
-- [Insurance Dataset](./commercial_insurance.data.xlsx)
+- [Business Analysis & Solution Design](https://github.com/yadavvaibhav0143/commercial-insurance-policy-comparison-platform/blob/main/Commercial%20Insurance%20Policy_Word.doc..pdf)
+- [Business Analysis Presentation](https://github.com/yadavvaibhav0143/commercial-insurance-policy-comparison-platform/blob/main/commercial_insurance_pptx.pdf)
+- [Insurance Dataset](https://github.com/yadavvaibhav0143/commercial-insurance-policy-comparison-platform/blob/main/commercial_insurance.data..xlsx)
 - [Insurance Database Schema](./insurance_schema.sql)
 - [Insurance Sample Data](./insurance_sample_data.sql)
 - [SQL Analytics Queries](./insurance_analytics_queries.sql)
