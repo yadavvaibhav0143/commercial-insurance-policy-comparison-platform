@@ -115,10 +115,13 @@ The repository contains the project documentation, solution design, data, SQL, A
 - [SQL Analytics Queries](./insurance_analytics_queries.sql)
 - [SQL Query 1 — Policy Comparison Turnaround](./In.Query_1.png)
 - [SQL Query 2 — Coverage & Exclusion Density](./In.Query_2.png)
+- [View Tableau Dashboard](https://public.tableau.com/app/profile/vaibhav.yadav6144/viz/CommercialINS_/Dashboard#2)
 
 ---
 
 ## Preview
+
+[🔗 View Interactive Tableau Dashboard](https://public.tableau.com/app/profile/vaibhav.yadav6144/viz/CommercialINS_/Dashboard#2)
 
 ![Commercial Insurance Policy Comparison & Risk Insights Dashboard](./In.dash.png)
 
